@@ -1,0 +1,15 @@
+names:
+- 40KM
+- 60KM
+- Pare
+- SentidoProibido
+nc: 4
+roboflow:
+  license: Public Domain
+  project: sinais-de-regulamentacao-q5cj5
+  url: https://app.roboflow.com/maria-fernanda-rezende/sinais-de-regulamentacao-q5cj5/2
+  version: 2
+  workspace: maria-fernanda-rezende
+test: ../test/images
+train: Sinais-de-Regulamentacao-2/train/images
+val: Sinais-de-Regulamentacao-2/valid/images

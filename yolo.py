@@ -45,10 +45,7 @@ class Yolov9:
         
         self.stride, self.names, self.pt = self.model.stride, self.model.names, self.model.pt
         imgsz = check_img_size(self.img_size, s=self.stride)  # check image size
-        
 
-
-       
         if self.device.type != 'cpu':
             self.model(torch.zeros(1, 3, imgsz, imgsz).to(self.device).type_as(next(self.model.parameters())))  # run once
 
@@ -76,16 +73,14 @@ class Yolov9:
             # Inference
         
         pred = self.model(img, augment=False)
-
+        pred = pred[0][1]
         # NMS
         pred = non_max_suppression(pred, self.conf_thres, self.iou_thres, self.classes, False, max_det=1000)
 
         centers = []
         # Process predictions
         for i, det in enumerate(pred):  # per image
-
-            if self.webcam:  # batch_size >= 1
-                
+            if self.webcam:  # batch_size >= 1  
                 s, im0 = '%g: ' % i, img0[i].copy()
             else:
                 s, im0 = '', img0

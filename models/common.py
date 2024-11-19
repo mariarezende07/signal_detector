@@ -703,6 +703,7 @@ class DetectMultiBackend(nn.Module):
 
         if pt:  # PyTorch
             model = attempt_load(weights if isinstance(weights, list) else w, device=device, inplace=True, fuse=fuse)
+            print(model)
             stride = max(int(model.stride.max()), 32)  # model stride
             names = model.module.names if hasattr(model, 'module') else model.names  # get class names
             model.half() if fp16 else model.float()
@@ -872,7 +873,7 @@ class DetectMultiBackend(nn.Module):
             im = im.permute(0, 2, 3, 1)  # torch BCHW to numpy BHWC shape(1,320,192,3)
 
         if self.pt:  # PyTorch
-            y = self.model(im, augment=augment, visualize=visualize) if augment or visualize else self.model(im)
+            y = self.model(im)
         elif self.jit:  # TorchScript
             y = self.model(im)
         elif self.dnn:  # ONNX OpenCV DNN
@@ -954,7 +955,7 @@ class DetectMultiBackend(nn.Module):
         if any(warmup_types) and (self.device.type != 'cpu' or self.triton):
             im = torch.empty(*imgsz, dtype=torch.half if self.fp16 else torch.float, device=self.device)  # input
             for _ in range(2 if self.jit else 1):  #
-                self.forward(im)  # warmup
+                self.forward(im)
 
     @staticmethod
     def _model_type(p='path/to/model.pt'):

@@ -76,7 +76,7 @@ class Yolov9:
             # Inference
         
         pred = self.model(img, augment=False)
-
+        pred = pred[0][1]
         # NMS
         pred = non_max_suppression(pred, self.conf_thres, self.iou_thres, self.classes, False, max_det=1000)
 
@@ -91,6 +91,7 @@ class Yolov9:
                 s, im0 = '', img0
             
             annotator = Annotator(im0, line_width=3, example=str(self.names))
+            detections = []
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_boxes(img.shape[2:], det[:, :4], im0.shape).round()
@@ -99,12 +100,13 @@ class Yolov9:
                 for c in det[:, 5].unique():
                     n = (det[:, 5] == c).sum()  # detections per class
                     s += f"{n} {self.names[int(c)]}{'s' * (n > 1)}, "  # add to string
-
+                
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
                     centers.append((xyxy, conf))
                     c = int(cls)  # integer class
-                    label =  f'{self.names[c]} {conf:.2f}'
+                    label =  f'{self.names[c]} \n {conf:.2f}'
+                    detections= [self.names[c], conf.item(), (float(xyxy[2] + xyxy[0])/2, float(xyxy[3] + xyxy[1])/2)]
                     annotator.box_label(xyxy, label, color=colors(c, True))
-                    
-        return im0, centers
+                print(conf)
+        return im0, detections

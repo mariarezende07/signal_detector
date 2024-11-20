@@ -1,15 +1,16 @@
 names:
-- 40KM
-- 60KM
-- Pare
-- SentidoProibido
-nc: 4
+- person
+- prohibited
+- stop
+- vehicle
+- velocity
+nc: 5
 roboflow:
-  license: Public Domain
-  project: sinais-de-regulamentacao-q5cj5
-  url: https://app.roboflow.com/maria-fernanda-rezende/sinais-de-regulamentacao-q5cj5/2
+  license: CC BY 4.0
+  project: deteccaonotransito
+  url: https://universe.roboflow.com/carlatrafficsign/deteccaonotransito/dataset/2
   version: 2
-  workspace: maria-fernanda-rezende
+  workspace: carlatrafficsign
 test: ../test/images
-train: Sinais-de-Regulamentacao-2/train/images
-val: Sinais-de-Regulamentacao-2/valid/images
+train: DeteccaoNotransito-2/train/images
+val: DeteccaoNotransito-2/valid/images

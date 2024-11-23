@@ -17,10 +17,10 @@ class Yolov9:
     def __init__(self, 
                 weights,  # model path or triton URL                 
                 classes = None,
-                data = 'C:/Users/seren/OneDrive/Área de Trabalho/TCC/signal_detector/data.yaml',
+                data = 'data.yaml',
                 img_size=1280,  # inference size (height, width)
-                conf_thres=0.25,  # confidence threshold
-                iou_thres=0.45,  # NMS IOU threshold
+                conf_thres=0.15,  # confidence threshold
+                iou_thres=0.60,  # NMS IOU threshold
                 ) -> None:
         
         
@@ -107,6 +107,8 @@ class Yolov9:
                     c = int(cls)  # integer class
                     label =  f'{self.names[c]} \n {conf:.2f}'
                     detections= [self.names[c], conf.item(), (float(xyxy[2] + xyxy[0])/2, float(xyxy[3] + xyxy[1])/2)]
-                    annotator.box_label(xyxy, label, color=colors(c, True))
-                print(conf)
+                    
+                    #if conf > 0.7:
+                    #annotator.box_label(xyxy, label, color=colors(c, True))
+                #print(conf)
         return im0, detections

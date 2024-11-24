@@ -12,7 +12,7 @@ pt_tts = pyttsx3.init()
 pt_tts.setProperty('voice', b'brazil')
 
 class ImageDetector():
-    RECTANGLE_DURATION = 5  # Time to keep the rectangle in seconds
+    RECTANGLE_DURATION = 3  # Time to keep the rectangle in seconds
 
     def __init__(self):
         
@@ -28,27 +28,34 @@ class ImageDetector():
     def image_callback(self):
         
         ret, cv_image = self.camera.read()
-        
+        cv_image = cv2.resize(cv_image, (848, 480))
         display_img, predictions = self.yolov9.detect([cv_image])
 
         current_time = time.time()
         
-        print(predictions)
+
         if len(predictions) > 0 and self.last_seen != predictions[0]:
             distance = estimate_distance(predictions)
-            print(f'{distance} m')
-            if predictions[1] > 0.7 and distance < 20:
+            if predictions[0] == 'prohibited':
+                print(f'{distance} m')
+            if predictions[1] > 0.7 and 5 < distance < 20:
                 thread = Thread(target=tts_driver_assistance, args=(predictions[0],))
                 thread.start()
                 self.last_seen = predictions[0]
                 self.last_detection_time = current_time
+                
+                
         ticks =  current_time - self.last_detection_time
         if ticks <= self.RECTANGLE_DURATION:
             if self.last_seen != "person":
                 draw_sign(self.last_seen, display_img)
+                if ticks == 0 : 
+                    cv2.imwrite("C:/Users/seren/OneDrive/Área de Trabalho/TCC/signal_detector/signs_drawing/driver_assistance_imgs/da_proibido.jpg",display_img)
             else:
                 draw.draw_pedestrian(display_img, int(ticks))
+                cv2.imwrite("C:/Users/seren/OneDrive/Área de Trabalho/TCC/signal_detector/signs_drawing/driver_assistance_imgs/da_pedestres.jpg",display_img)
 
+            
 
         cv2.imshow("custom window", display_img)
         cv2.waitKey(1)
